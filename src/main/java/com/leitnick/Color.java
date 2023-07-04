@@ -143,8 +143,11 @@ public class Color {
         green = nearestValue(green);
         blue = nearestValue(blue);
         int redNormalized = (red - ANSI_FIRST) / ANSI_INCREASE + 1;
+        if (redNormalized < 0) redNormalized = 0;
         int greenNormalized = (green - ANSI_FIRST) / ANSI_INCREASE + 1;
+        if (greenNormalized < 0) greenNormalized = 0;
         int blueNormalized = (blue - ANSI_FIRST) / ANSI_INCREASE + 1;
+        if (blueNormalized < 0) blueNormalized = 0;
         ansiCode = redNormalized * ANSI_STEPS * ANSI_STEPS + greenNormalized * ANSI_STEPS + blueNormalized + ANSI_SHIFT;
     }
 
