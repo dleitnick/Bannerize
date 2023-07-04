@@ -127,9 +127,13 @@ public class Banner {
         if (isEdge) {
             editedLine = new StringBuilder(colorUtil.backgroundColor(borderColor, 6 + stringLength));
         } else {
-            editedLine = new StringBuilder(colorUtil.backgroundColor(borderColor, 3))
-                    .append(colorUtil.backgroundColor(bgColor, stringLength))
-                    .append(colorUtil.backgroundColor(borderColor, 3));
+            editedLine = new StringBuilder(colorUtil.backgroundColor(borderColor, 3));
+            if (bgColor != null) {
+                editedLine.append(colorUtil.backgroundColor(bgColor, stringLength));
+            } else {
+                editedLine.append(String.format(formatString, ""));
+            }
+            editedLine.append(colorUtil.backgroundColor(borderColor, 3));
         }
         return editedLine.toString();
     }
@@ -140,8 +144,10 @@ public class Banner {
         if (isEdge) {
             editedLine.insert(0, ANSI_BG + borderColor.getAnsiCode() + "}      ").append(BG_DEFAULT);
         } else {
+            if (bgColor != null) {
+                editedLine.insert(0, ANSI_BG + bgColor.getAnsiCode() + "}");
+            }
             editedLine
-                    .insert(0, ANSI_BG + bgColor.getAnsiCode() + "}")
                     .insert(0, ANSI_BG + borderColor.getAnsiCode() + "}   ")
                     .append(ANSI_BG)
                     .append(borderColor.getAnsiCode())
@@ -154,7 +160,7 @@ public class Banner {
     private String[] createBase(String message) {
         String messageFiglet;
         try {
-            messageFiglet = FigletFont.convertOneLine(FONT_PATH + "s-relief.flf", message.toUpperCase());
+            messageFiglet = FigletFont.convertOneLine(FONT_PATH + "univers.flf", message);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

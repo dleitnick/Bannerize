@@ -52,13 +52,14 @@ public class Main {
 //        String lengthTest = String.format(lengthFormat, "");
 //        System.out.println(lengthTest.length());
 
-        Banner titleBanner = new Banner(true);
-        titleBanner.addBorder(new Color(54));
-        String[] bannerArr = titleBanner.makeBanner("Title");
+        Banner titleBanner = new Banner(new Color(226), true, new Color(0), true);
+        titleBanner.addBorder(new Color(237));
+        titleBanner.addGradient(new Color(196));
+        String[] bannerArr = titleBanner.makeBanner("Tenmo");
         for (String s : bannerArr) {
             System.out.println(s);
         }
-        String[] bannerView = titleBanner.makePreviewBanner("Title");
+        String[] bannerView = titleBanner.makePreviewBanner("Pink Floyd");
         for (String s : bannerView) {
             System.out.println(s);
         }
