@@ -52,7 +52,7 @@ public class Main {
 //        String lengthTest = String.format(lengthFormat, "");
 //        System.out.println(lengthTest.length());
 
-        Banner titleBanner = new Banner(new Color(226), true, new Color(0), true);
+        Banner titleBanner = new Banner(new Color(226), true, new Color(234), true);
         titleBanner.addBorder(new Color(237));
         titleBanner.addGradient(new Color(196));
         String[] bannerArr = titleBanner.makeBanner("Tenmo");

@@ -96,6 +96,7 @@ public class Banner {
         int stringLength = banner[0].length();
         String[] bannerWithEdits = new String[bannerLength];
         Color[] colorGradient = createColorGradient(stringColor, gradientEnd, banner.length);
+//        Color[] bgGradient = createColorGradient(new Color(21), new Color(51),bannerLength); // for bg gradients
         if (borderColor != null) {
             for (int i = 0; i < bannerLength; i++) {
                 if (i < 2 || i > bannerLength - 3) {
