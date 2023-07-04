@@ -198,24 +198,32 @@ public class Banner {
         } else if (isBold) {
             editedLine = new StringBuilder(colorUtil.stringStyle(editedLine.toString(), "bold"));
         }
-        return editedLine.append(" : ").append(textColor.getAnsiCode()).append("  R: ").append(textColor.getRed()).append("  G: ").append(textColor.getGreen()).append("  B: ").append(textColor.getBlue()).toString();
+        if (borderColor != null) {
+            editedLine.insert(0, colorUtil.backgroundColor(borderColor, 3)).append(colorUtil.backgroundColor(borderColor, 3));
+        }
+        if (textColor != null) {
+            editedLine.append(" : ").append(textColor.getAnsiCode()).append("  R: ").append(textColor.getRed()).append("  G: ").append(textColor.getGreen()).append("  B: ").append(textColor.getBlue());
+        }
+        return editedLine.toString();
     }
 
     private Color[] createColorGradient(Color startColor, Color endColor, int steps) {
         Color[] colorGradient = new Color[steps];
         colorGradient[0] = startColor;
         colorGradient[steps - 1] = endColor;
-        int r1 = startColor.getRed();
-        int g1 = startColor.getGreen();
-        int b1 = startColor.getBlue();
-        int r2 = endColor.getRed();
-        int g2 = endColor.getGreen();
-        int b2 = endColor.getBlue();
-        for (int i = 1; i < steps - 1; i++) {
-            int r = r1 + (r2 - r1) * i / (steps - 1);
-            int g = g1 + (g2 - g1) * i / (steps - 1);
-            int b = b1 + (b2 - b1) * i / (steps - 1);
-            colorGradient[i] = new Color(r, g, b, true); // will produce lesser resolution gradients as ANSI
+        if (startColor != null && endColor != null) {
+            int r1 = startColor.getRed();
+            int g1 = startColor.getGreen();
+            int b1 = startColor.getBlue();
+            int r2 = endColor.getRed();
+            int g2 = endColor.getGreen();
+            int b2 = endColor.getBlue();
+            for (int i = 1; i < steps - 1; i++) {
+                int r = r1 + (r2 - r1) * i / (steps - 1);
+                int g = g1 + (g2 - g1) * i / (steps - 1);
+                int b = b1 + (b2 - b1) * i / (steps - 1);
+                colorGradient[i] = new Color(r, g, b, true); // will produce lesser resolution gradients as ANSI
+            }
         }
         return colorGradient;
     }
