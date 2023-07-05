@@ -14,13 +14,14 @@ public class Banner {
     private static final String BG_DEFAULT = ANSI_BG + "DEFAULT}";
     private static final String STYLE_DEFAULT = "${AnsiStyle.NORMAL}";
     private static final ColorUtil colorUtil = new ColorUtil();
-
-    private Color stringColor;
-    private Color bgColor;
+    private final Color stringColor;
+    private final Color bgColor;
+    private final boolean isBold;
+    private final boolean isBgColored;
     private Color gradientEnd;
-    private boolean isBold;
-    private boolean isBgColored;
     private Color borderColor = null;
+    private String font = "standard.flf";
+    private boolean printColorInfo = false;
 
     public Banner(Color stringColor, boolean isBgColored, Color bgColor, boolean isBold) {
         this.stringColor = stringColor;
@@ -161,7 +162,7 @@ public class Banner {
     private String[] createBase(String message) {
         String messageFiglet;
         try {
-            messageFiglet = FigletFont.convertOneLine(FONT_PATH + "univers.flf", message);
+            messageFiglet = FigletFont.convertOneLine(FONT_PATH + font, message);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -208,7 +209,7 @@ public class Banner {
         if (borderColor != null) {
             editedLine.insert(0, colorUtil.backgroundColor(borderColor, 3)).append(colorUtil.backgroundColor(borderColor, 3));
         }
-        if (textColor != null) {
+        if (textColor != null && printColorInfo) {
             editedLine.append(" : ").append(textColor.getAnsiCode()).append("  R: ").append(textColor.getRed()).append("  G: ").append(textColor.getGreen()).append("  B: ").append(textColor.getBlue());
         }
         return editedLine.toString();
@@ -235,4 +236,11 @@ public class Banner {
         return colorGradient;
     }
 
+    public void setFont(String font) {
+        this.font = font;
+    }
+
+    public void setPrintColorInfo(boolean printColorInfo) {
+        this.printColorInfo = printColorInfo;
+    }
 }
