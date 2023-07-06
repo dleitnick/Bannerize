@@ -77,4 +77,8 @@ public class ColorUtil {
         return str + String.format(extension, " ");
     }
 
+    public String stringReset() {
+        return "\u001b[0m";
+    }
+
 }

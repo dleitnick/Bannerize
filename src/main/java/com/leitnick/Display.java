@@ -21,6 +21,7 @@ public class Display {
 
     private final Scanner input = new Scanner(System.in);
     private final ColorUtil colorUtil = new ColorUtil();
+    private final Banner userBanner = new Banner();
 
     public void run() {
         title();
@@ -31,53 +32,160 @@ public class Display {
         title.addBorder(new Color(colorPresets[0][2]));
         title.addGradient(new Color(colorPresets[0][3]));
         title.setFont("univers.flf");
-        printBanner(title, titleName);
+        title.setMessage(titleName);
+        printBanner(title);
         mainMenu();
     }
 
     private void mainMenu() {
-        System.out.println("1. Enter a message for your banner");
-        System.out.println("2. Add color and borders");
-        System.out.println("3. Preview fonts");
-        System.out.println("4. Preview current configuration");
-        System.out.println("5. Create banner.txt");
-        System.out.println("0. Exit");
-        int[] menuOptions = {1, 2, 3, 4, 5, 0};
-        int choice = promptForInteger(colorUtil.stringStyle("Choose an option --> ", "bold"), menuOptions);
-        if (choice == 1)      messageEntry();
-        else if (choice == 2) customize();
-        else if (choice == 3) previewFonts();
-        else if (choice == 4) preview();
-        else if (choice == 5) createBannerFile();
-//        else if (choice != 0) {
-//            printErrorMessage(String.format("%d is not an option. Please choose one of these options.", choice));
-//            pauseOutput();
-//            mainMenu();
-//        }
+        int choice = -1;
+        while (choice != 0) {
+            System.out.println();
+            System.out.println("1. Enter a message for your banner");
+            System.out.println("2. Add color and borders");
+            System.out.println("3. Choose and preview fonts");
+            System.out.println("4. Preview current configuration");
+            System.out.println("5. Create banner.txt");
+            System.out.println("0. Exit");
+            int[] menuOptions = {1, 2, 3, 4, 5, 0};
+            choice = promptForInteger(colorUtil.stringStyle("Choose an option --> ", "bold"), menuOptions);
+            System.out.println();
+            if (choice == 1) messageEntry();
+            else if (choice == 2) customize();
+            else if (choice == 3) previewFonts();
+            else if (choice == 4) preview();
+            else if (choice == 5) createBannerFile();
+        }
     }
 
     private void messageEntry() {
-        System.out.println("Message Entry!");
+        String message = promptForString("Enter the message of your banner: ");
+        userBanner.setMessage(message);
     }
 
+    //TODO: Add ways to remove customization
     private void customize() {
         System.out.println("Customize!");
+        int choice = -1;
+        while (choice != 0) {
+            System.out.println();
+            System.out.println("1. Change text color");
+            System.out.println("2. Change background color");
+            System.out.println("3. Add border and color");
+            System.out.println("4. Make font bold");
+            System.out.println("5. Add gradient to text color");
+            System.out.println("0. Exit");
+            int[] menuOptions = {1, 2, 3, 4, 5, 0};
+            choice = promptForInteger(chooseAnOption(), menuOptions);
+            if (choice == 1) changeTextColor();
+            else if (choice == 2) changeBackgroundColor();
+            else if (choice == 3) addBorder();
+            else if (choice == 4) makeFontBold();
+            else if (choice == 5) addGradient();
+        }
+    }
+
+    private void changeTextColor() {
+        userBanner.setStringColor(
+                new Color(promptForInteger(colorUtil.stringStyle(
+                        "Select an ANSI color (0 - 255) --> ", "bold"))));
+    }
+
+    private void changeBackgroundColor() {
+        userBanner.setBgColor(
+                new Color(promptForInteger(colorUtil.stringStyle(
+                        "Select an ANSI color (0 - 255) --> ", "bold"))));
+        userBanner.setBgColored(true);
+    }
+
+    private void addBorder() {
+        userBanner.setBorderColor(
+                new Color(promptForInteger(colorUtil.stringStyle(
+                        "Select an ANSI color (0 - 255) --> ", "bold"))));
+    }
+
+    private void makeFontBold() {
+        userBanner.setBold(promptForYesNo(colorUtil.stringStyle(
+                "Make font bold? Yes or No --> ", "bold")));
+    }
+
+    private void addGradient() {
+        userBanner.setGradientEnd(
+                new Color(promptForInteger(colorUtil.stringStyle(
+                        "Select an ANSI color (0 - 255) --> ", "bold"))));
     }
 
     private void previewFonts() {
         System.out.println("Preview Fonts!");
+        Banner fontBanner = new Banner();
+        fontBanner.setMessage(userBanner.getMessage());
+        fontBanner.setBgColor(userBanner.getBgColor());
+        fontBanner.setStringColor(userBanner.getStringColor());
+        fontBanner.setBorderColor(userBanner.getBorderColor());
+        fontBanner.setGradientEnd(userBanner.getGradientEnd());
+        fontBanner.setBold(userBanner.isBold());
+        fontBanner.setBgColored(userBanner.isBgColored());
+        for (int i = 0; i < fonts.length; i++) {
+            String fontName = colorUtil.backgroundColor(new Color(233)) + colorUtil.stringColor(String.format("⬇️ %d. %-30s  ", i + 1, fonts[i].split("\\.")[0]), new Color(15), "bold");
+            for (int j = 0; j < 8; j++) {
+                System.out.print(fontName);
+            }
+            System.out.println("\n");
+            fontBanner.setFont(fonts[i]);
+            printBanner(fontBanner);
+            if ((i + 1) % 3 == 0) {
+                int fontChoice = promptForFontChoice("Select a font # or select 0 to exit to main menu. Press return to see more fonts.\n" + chooseAnOption());
+                if (fontChoice == 0) break;
+            }
+        }
+    }
+
+    private int promptForFontChoice(String prompt) {
+        int choice = -1;
+        while (true) {
+            choice = promptForInteger(prompt);
+            if (choice == -1 || choice == 0) break;
+            if (choice < 1 || choice > fonts.length) {
+                promptForFontChoice(prompt);
+            } else {
+                userBanner.setFont(fonts[choice - 1]);
+                System.out.println();
+            }
+            choice = promptForInteger("Press return to see more fonts or select 0 to exit to main menu.\n" + chooseAnOption());
+            if (choice == -1 || choice == 0) break;
+        }
+        return choice;
     }
 
     private void preview() {
-        System.out.println("Preview!");
+        printBanner(userBanner);
     }
 
     private void createBannerFile() {
-        System.out.println("Create File!");
+        int choice = -1;
+        while (choice != 0) {
+            System.out.println("1. Create banner.txt in root");
+            System.out.println("2. Create at custom path");
+            System.out.println("0. Exit");
+            choice = promptForInteger(chooseAnOption());
+            if (choice == 1) {
+                FileWriter fileWriter = new FileWriter();
+                fileWriter.makeBannerTxt(userBanner.makeBanner());
+                System.out.println("Banner.txt created!");
+                break;
+            } else if (choice == 2) {
+                String fileLocation =
+                        promptForString(boldMessage("Enter the path you'd like to create the banner.txt in: "));
+                FileWriter fileWriter = new FileWriter(fileLocation);
+                fileWriter.makeBannerTxt(userBanner.makeBanner());
+                System.out.println("Banner.txt created!");
+                break;
+            }
+        }
     }
 
-    private void printBanner(Banner banner, String message) {
-        String[] bannerView = banner.makePreviewBanner(message);
+    private void printBanner(Banner banner) {
+        String[] bannerView = banner.makePreviewBanner();
             for (String s : bannerView) {
                 System.out.println(s);
             }
@@ -86,7 +194,9 @@ public class Display {
 
     private String promptForString(String prompt) {
         System.out.print(prompt);
-        return input.nextLine();
+        String result = input.nextLine();
+        if (result == null) result = promptForString(prompt);
+        return result;
     }
 
     private Integer promptForInteger(String prompt) {
@@ -114,6 +224,7 @@ public class Display {
                 result = promptForInteger(prompt, acceptableValues);
             }
         }
+        if (result == null) result = -1;
         return result;
     }
 
@@ -127,21 +238,26 @@ public class Display {
         System.out.println();
     }
 
-//    public static void main(String[] args) {
-//        Banner titleBanner = new Banner(new Color(226), true, new Color(234), true);
-////        titleBanner.addBorder(new Color(237));
-////        titleBanner.addGradient(new Color(196));
-//        for (String font : fonts) {
-//            titleBanner.setFont(font);
-////            String[] bannerArr = titleBanner.makeBanner("Tenmo");
-////            for (String s : bannerArr) {
-////                System.out.println(s);
-////            }
-//            String[] bannerView = titleBanner.makePreviewBanner("Pink Floyd");
-//            System.out.println(font);
-//            for (String s : bannerView) {
-//                System.out.println(s);
-//            }
-//        }
-//    }
+    private boolean promptForYesNo(String prompt) {
+        while (true) {
+            String reply = promptForString(prompt);
+            String upperReply = reply.toUpperCase();
+            if (upperReply.startsWith("Y")) {
+                return true;
+            } else if (upperReply.startsWith("N")) {
+                return false;
+            } else {
+                printErrorMessage("Please enter Y or N");
+            }
+        }
+    }
+
+    private String chooseAnOption() {
+        return boldMessage("Choose an option --> ");
+    }
+
+    private String boldMessage(String message) {
+        return colorUtil.stringStyle(message, "bold");
+    }
+
 }

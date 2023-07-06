@@ -14,13 +14,14 @@ public class Banner {
     private static final String BG_DEFAULT = ANSI_BG + "DEFAULT}";
     private static final String STYLE_DEFAULT = "${AnsiStyle.NORMAL}";
     private static final ColorUtil colorUtil = new ColorUtil();
-    private final Color stringColor;
-    private final Color bgColor;
-    private final boolean isBold;
-    private final boolean isBgColored;
+    private Color stringColor;
+    private Color bgColor;
+    private boolean isBold;
+    private boolean isBgColored;
     private Color gradientEnd;
     private Color borderColor = null;
     private String font = "standard.flf";
+    private String message = "Brick quiz whangs jumpy veldt fox!";
     private boolean printColorInfo = false;
 
     public Banner(Color stringColor, boolean isBgColored, Color bgColor, boolean isBold) {
@@ -54,8 +55,11 @@ public class Banner {
         this(null, false, null, isBold);
     }
 
-    public String[] makeBanner(String message) {
-        String[] banner = createBase(message);
+    public Banner() {
+    }
+
+    public String[] makeBanner() {
+        String[] banner = createBase();
         int bannerLength = banner.length;
         if (borderColor != null) {
             bannerLength += 4;
@@ -84,8 +88,8 @@ public class Banner {
         return bannerWithEdits;
     }
 
-    public String[] makePreviewBanner(String message) {
-        String[] banner = createBase(message);
+    public String[] makePreviewBanner() {
+        String[] banner = createBase();
         int bannerLength = banner.length;
         if (borderColor != null) {
             bannerLength += 4;
@@ -159,7 +163,7 @@ public class Banner {
         return editedLine.toString();
     }
 
-    private String[] createBase(String message) {
+    private String[] createBase() {
         String messageFiglet;
         try {
             messageFiglet = FigletFont.convertOneLine(FONT_PATH + font, message);
@@ -232,8 +236,24 @@ public class Banner {
                 int b = b1 + (b2 - b1) * i / (steps - 1);
                 colorGradient[i] = new Color(r, g, b, true); // will produce lesser resolution gradients as ANSI
             }
+        } else if (endColor == null) {
+            for (int i = 1; i < colorGradient.length; i++) {
+                colorGradient[i] = startColor;
+            }
         }
         return colorGradient;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setStringColor(Color stringColor) {
+        this.stringColor = stringColor;
+    }
+
+    public void setBgColor(Color bgColor) {
+        this.bgColor = bgColor;
     }
 
     public void setFont(String font) {
@@ -242,5 +262,53 @@ public class Banner {
 
     public void setPrintColorInfo(boolean printColorInfo) {
         this.printColorInfo = printColorInfo;
+    }
+
+    public Color getStringColor() {
+        return stringColor;
+    }
+
+    public Color getBgColor() {
+        return bgColor;
+    }
+
+    public boolean isBold() {
+        return isBold;
+    }
+
+    public Color getGradientEnd() {
+        return gradientEnd;
+    }
+
+    public Color getBorderColor() {
+        return borderColor;
+    }
+
+    public String getFont() {
+        return font;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setGradientEnd(Color gradientEnd) {
+        this.gradientEnd = gradientEnd;
+    }
+
+    public void setBorderColor(Color borderColor) {
+        this.borderColor = borderColor;
+    }
+
+    public void setBold(boolean bold) {
+        isBold = bold;
+    }
+
+    public boolean isBgColored() {
+        return isBgColored;
+    }
+
+    public void setBgColored(boolean bgColored) {
+        isBgColored = bgColored;
     }
 }
